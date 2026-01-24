@@ -1,0 +1,8 @@
+createAddress:
+  handler: src/main/functions/addresses/createAddress.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /addresses
+        authorizer:
+          name: CognitoAuthorizer

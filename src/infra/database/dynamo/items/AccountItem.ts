@@ -79,7 +79,7 @@ export namespace AccountItem {
     street: string;
     number: string;
     state: string;
-    postalCode?: string;
+    postalCode: string;
   }
 
   export type ItemType = Keys & Attributes & {

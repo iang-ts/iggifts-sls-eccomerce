@@ -36,6 +36,6 @@ export namespace Account {
     street: string;
     number: string;
     state: string;
-    postalCode?: string;
+    postalCode: string;
   }
 }

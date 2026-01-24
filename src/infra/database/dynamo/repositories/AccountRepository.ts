@@ -1,5 +1,5 @@
 import { Account } from '@application/entities/Account';
-import { PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoClient } from '@infra/clients/dynamoClient';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { AppConfig } from '@shared/config/AppConfig';
@@ -35,6 +35,33 @@ export class AccountRepository {
     return AccountItem.toEntity(account);
   }
 
+  async newAddress({ accountId, address }: AccountRepository.newAddressParams) {
+    const command = new UpdateCommand({
+      TableName: this.config.db.dynamodb.mainTable,
+      Key: {
+        PK: AccountItem.getPK(accountId),
+        SK: AccountItem.getSK(accountId),
+      },
+      UpdateExpression: `
+        SET #addresses = list_append(
+          if_not_exists(#addresses, :emptyList),
+          :newAddress
+        )
+      `,
+      ExpressionAttributeNames: {
+        '#addresses': 'addresses',
+      },
+      ExpressionAttributeValues: {
+        ':newAddress': [address],
+        ':emptyList': [],
+      },
+      ConditionExpression: 'attribute_exists(PK)',
+      ReturnValues: 'ALL_NEW',
+    });
+
+    return dynamoClient.send(command);
+  }
+
   async create(account: Account): Promise<void> {
     const accountItem = AccountItem.fromEntity(account);
 
@@ -44,5 +71,18 @@ export class AccountRepository {
     });
 
     await dynamoClient.send(command);
+  }
+}
+
+export namespace AccountRepository {
+  export type newAddressParams = {
+    accountId: string;
+    address: {
+      name: string;
+      street: string;
+      number: string;
+      state: string;
+      postalCode: string;
+    }
   }
 }
