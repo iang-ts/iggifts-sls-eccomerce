@@ -32,8 +32,10 @@ export class AccountItem {
   static toEntity(accountItem: AccountItem.ItemType) {
     return new Account({
       id: accountItem.id,
+      name: accountItem.name,
       email: accountItem.email,
       externalId: accountItem.externalId,
+      addresses: accountItem.addresses,
       createdAt: new Date(accountItem.createdAt),
     });
   }
@@ -65,10 +67,20 @@ export namespace AccountItem {
 
   export type Attributes = {
     id: string;
+    name: string;
     email: string;
     externalId: string | undefined;
+    addresses: Address[];
     createdAt: string;
   };
+
+  export type Address = {
+    name: string;
+    street: string;
+    number: string;
+    state: string;
+    postalCode?: string;
+  }
 
   export type ItemType = Keys & Attributes & {
     type: 'Account';

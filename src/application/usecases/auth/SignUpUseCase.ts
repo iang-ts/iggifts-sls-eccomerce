@@ -12,6 +12,7 @@ export class SignUpUseCase {
   ) {}
 
   async execute({
+    name,
     email,
     password,
   }: SignUpUseCase.Input): Promise<SignUpUseCase.Output> {
@@ -21,7 +22,7 @@ export class SignUpUseCase {
       throw new EmailAlreadyInUse();
     }
 
-    const account = new Account({ email });
+    const account = new Account({ name, email });
 
     const { externalId } = await this.authGateway.signUp({
       email,
@@ -47,6 +48,7 @@ export class SignUpUseCase {
 
 export namespace SignUpUseCase {
   export type Input = {
+    name: string;
     email: string;
     password: string;
   };
