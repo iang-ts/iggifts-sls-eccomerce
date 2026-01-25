@@ -1,0 +1,6 @@
+Resources:
+  ProductsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: ${self:service}-${self:provider.stage}-products-bucket-ian-dev
