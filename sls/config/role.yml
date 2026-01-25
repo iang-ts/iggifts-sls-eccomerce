@@ -7,3 +7,9 @@ statements:
     Resource:
       - !GetAtt MainTable.Arn
       - !Sub '${MainTable.Arn}/index/*'
+
+  - Effect: Allow
+    Action:
+    - s3:PutObject
+    - s3:GetObject
+    Resource: !Sub '${ProductsBucket.Arn}/*'
