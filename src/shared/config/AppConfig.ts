@@ -7,6 +7,10 @@ export class AppConfig {
 
   readonly db: AppConfig.Database;
 
+  readonly storage: AppConfig.Storage;
+
+  readonly cdns: AppConfig.Cdns;
+
   constructor() {
     this.auth = {
       cognito: {
@@ -21,6 +25,14 @@ export class AppConfig {
       dynamodb: {
         mainTable: env.MAIN_TABLE_NAME,
       },
+    };
+
+    this.storage = {
+      productsBucket: env.PRODUCTS_BUCKET,
+    };
+
+    this.cdns = {
+      productsCDN: env.PRODUCTS_CDN_DOMAIN_NAME,
     };
   }
 }
@@ -40,4 +52,12 @@ export namespace AppConfig {
       mainTable: string;
     };
   };
+
+  export type Storage = {
+    productsBucket: string;
+  }
+
+  export type Cdns = {
+    productsCDN: string;
+  }
 }
