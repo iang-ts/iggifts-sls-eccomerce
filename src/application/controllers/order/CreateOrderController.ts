@@ -14,7 +14,14 @@ export class CreateOrderController extends Controller<'private', CreateOrderCont
   protected override async handle(
     { accountId, body }: Controller.Request<'private', CreateOrderBody>,
   ): Promise<Controller.Response<CreateOrderController.Response>> {
-    const { products, address } = body;
+    const {
+      products,
+      address,
+      cardNumber,
+      cardMonth,
+      cardYear,
+      cardCvv,
+    } = body;
 
     return {
       statusCode: 200,
@@ -22,6 +29,10 @@ export class CreateOrderController extends Controller<'private', CreateOrderCont
         accountId,
         products,
         address,
+        cardNumber,
+        cardMonth,
+        cardYear,
+        cardCvv,
       }),
     };
   }

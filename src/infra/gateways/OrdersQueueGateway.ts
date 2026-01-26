@@ -6,7 +6,7 @@ import { AppConfig } from '@shared/config/AppConfig';
 
 @Injectable()
 export class OrdersQueueGateway {
-  constructor(private readonly appConfig: AppConfig) {}
+  constructor(private readonly appConfig: AppConfig) { }
 
   async publish(message: OrdersQueueGateway.Message) {
     const command = new SendMessageCommand({
@@ -19,5 +19,13 @@ export class OrdersQueueGateway {
 }
 
 export namespace OrdersQueueGateway {
-  export type Message = Order.Attributes;
+  export type Message = {
+    order: Order;
+    cardDetails: {
+      cardNumber: string;
+      cardMonth: string;
+      cardYear: string;
+      cardCvv: string;
+    }
+  };
 }

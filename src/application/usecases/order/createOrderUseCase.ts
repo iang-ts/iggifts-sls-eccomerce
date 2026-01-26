@@ -1,5 +1,7 @@
 import { Order } from '@application/entities/Order';
 import { OrderProduct } from '@application/entities/OrderProduct';
+import { ErrorCode } from '@application/errors/ErrorCode';
+import { NotFound } from '@application/errors/http/NotFound';
 import { OrderProductRepository } from '@infra/database/dynamo/repositories/OrderProductRepository';
 import { OrderRepository } from '@infra/database/dynamo/repositories/OrderRepository';
 import { ProductRepository } from '@infra/database/dynamo/repositories/ProductRepository';
@@ -17,11 +19,29 @@ export class createOrderUseCase {
     private readonly saga: Saga,
   ) { }
 
-  async execute({ accountId, products, address }: createOrderUseCase.Input): Promise<createOrderUseCase.Output> {
+  async execute({
+    accountId,
+    products,
+    address,
+    cardNumber,
+    cardMonth,
+    cardYear,
+    cardCvv,
+  }: createOrderUseCase.Input): Promise<createOrderUseCase.Output> {
     return this.saga.run(async () => {
       const uniqueProductIds = [...new Set(products)];
 
       const findProducts = await this.productRepository.findByIds(uniqueProductIds);
+
+      if (findProducts.length !== uniqueProductIds.length) {
+        const foundIds = new Set(findProducts.map(p => p.id));
+        const notFoundIds = uniqueProductIds.filter(id => !foundIds.has(id));
+
+        throw new NotFound(
+          `Products not found: ${notFoundIds.join(', ')}`,
+          ErrorCode.PRODUCT_NOT_FOUND,
+        );
+      }
 
       const productMap = new Map(findProducts.map(p => [p.id, p]));
 
@@ -34,11 +54,7 @@ export class createOrderUseCase {
       let totalAmount = 0;
 
       productQuantities.forEach((quantity, productId) => {
-        const product = productMap.get(productId);
-
-        if (!product) {
-          return;
-        }
+        const product = productMap.get(productId)!;
 
         const subtotal = product.price * quantity;
         totalAmount += subtotal;
@@ -85,7 +101,15 @@ export class createOrderUseCase {
 
       order.status = Order.Status.QUEUED;
 
-      await this.ordersQueueGateway.publish(order);
+      await this.ordersQueueGateway.publish({
+        order,
+        cardDetails: {
+          cardNumber,
+          cardMonth,
+          cardYear,
+          cardCvv,
+        },
+      });
 
       return {
         order: order,
@@ -98,14 +122,18 @@ export class createOrderUseCase {
 export namespace createOrderUseCase {
   export type Input = {
     accountId: string;
-    products: string[]
+    products: string[];
     address: {
       name: string;
       street: string;
       number: string;
       state: string;
       postalCode: string;
-    }
+    };
+    cardNumber: string;
+    cardMonth: string;
+    cardYear: string;
+    cardCvv: string;
   };
 
   export type Output = {
