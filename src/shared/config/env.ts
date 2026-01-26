@@ -6,6 +6,7 @@ const schema = z.object({
   MAIN_TABLE_NAME: z.string().min(1),
   PRODUCTS_BUCKET: z.string().min(1),
   PRODUCTS_CDN_DOMAIN_NAME: z.string().min(1),
+  ORDERS_QUEUE: z.string().min(1),
 });
 
 export const env = schema.parse(process.env);

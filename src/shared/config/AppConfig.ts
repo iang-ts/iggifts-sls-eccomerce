@@ -11,6 +11,8 @@ export class AppConfig {
 
   readonly cdns: AppConfig.Cdns;
 
+  readonly queues: AppConfig.Queues;
+
   constructor() {
     this.auth = {
       cognito: {
@@ -33,6 +35,10 @@ export class AppConfig {
 
     this.cdns = {
       productsCDN: env.PRODUCTS_CDN_DOMAIN_NAME,
+    };
+
+    this.queues = {
+      ordersQueueUrl: env.ORDERS_QUEUE,
     };
   }
 }
@@ -59,5 +65,9 @@ export namespace AppConfig {
 
   export type Cdns = {
     productsCDN: string;
+  }
+
+  export type Queues = {
+    ordersQueueUrl: string;
   }
 }
