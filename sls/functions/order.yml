@@ -6,3 +6,12 @@ createOrder:
         path: /order
         authorizer:
           name: CognitoAuthorizer
+
+processOrder:
+  handler: src/main/functions/order/processOrder.handler
+  memorySize: 1024
+  timeout: 120
+  events:
+    - sqs:
+        arn: !GetAtt OrdersQueue.Arn
+        batchSize: 2

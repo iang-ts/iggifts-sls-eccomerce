@@ -15,3 +15,8 @@ statements:
     - s3:PutObject
     - s3:GetObject
     Resource: !Sub '${ProductsBucket.Arn}/*'
+
+  - Effect: Allow
+    Action:
+    - sqs:SendMessage
+    Resource: !GetAtt OrdersQueue.Arn
