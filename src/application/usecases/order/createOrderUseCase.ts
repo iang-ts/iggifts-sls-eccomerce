@@ -3,6 +3,7 @@ import { OrderProduct } from '@application/entities/OrderProduct';
 import { OrderProductRepository } from '@infra/database/dynamo/repositories/OrderProductRepository';
 import { OrderRepository } from '@infra/database/dynamo/repositories/OrderRepository';
 import { ProductRepository } from '@infra/database/dynamo/repositories/ProductRepository';
+import { OrdersQueueGateway } from '@infra/gateways/OrdersQueueGateway';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { Saga } from '@shared/saga/saga';
 
@@ -12,6 +13,7 @@ export class createOrderUseCase {
     private readonly productRepository: ProductRepository,
     private readonly orderRepository: OrderRepository,
     private readonly orderProductRepository: OrderProductRepository,
+    private readonly ordersQueueGateway: OrdersQueueGateway,
     private readonly saga: Saga,
   ) { }
 
@@ -76,8 +78,17 @@ export class createOrderUseCase {
         });
       }
 
+      await this.orderRepository.updateStatus({
+        orderId: order.id,
+        status: Order.Status.QUEUED,
+      });
+
+      order.status = Order.Status.QUEUED;
+
+      await this.ordersQueueGateway.publish(order);
+
       return {
-        order,
+        order: order,
         orderProducts,
       };
     });

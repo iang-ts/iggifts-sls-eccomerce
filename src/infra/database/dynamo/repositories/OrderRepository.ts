@@ -1,5 +1,5 @@
 import { Order } from '@application/entities/Order';
-import { DeleteCommand, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DeleteCommand, GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoClient } from '@infra/clients/dynamoClient';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { AppConfig } from '@shared/config/AppConfig';
@@ -38,6 +38,29 @@ export class OrderRepository {
     await dynamoClient.send(command);
   }
 
+  async updateStatus({ orderId, status }: OrderRepository.UpdateStatusParams): Promise<void> {
+    const command = new UpdateCommand({
+      TableName: this.config.db.dynamodb.mainTable,
+      Key: {
+        PK: OrderItem.getPK(orderId),
+        SK: OrderItem.getSK(orderId),
+      },
+      UpdateExpression: `
+        SET #status = :newStatus
+      `,
+      ExpressionAttributeNames: {
+        '#status': 'status',
+      },
+      ExpressionAttributeValues: {
+        ':newStatus': status,
+      },
+      ConditionExpression: 'attribute_exists(PK)',
+      ReturnValues: 'ALL_NEW',
+    });
+
+    await dynamoClient.send(command);
+  }
+
   async delete(orderId: string): Promise<void> {
     const command = new DeleteCommand({
       TableName: this.config.db.dynamodb.mainTable,
@@ -48,5 +71,12 @@ export class OrderRepository {
     });
 
     await dynamoClient.send(command);
+  }
+}
+
+export namespace OrderRepository {
+  export type UpdateStatusParams = {
+    orderId: string;
+    status: Order.Status;
   }
 }

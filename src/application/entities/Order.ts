@@ -50,7 +50,8 @@ export namespace Order {
   };
 
   export enum Status {
-    PENDING ='pending',
+    PENDING = 'pending',
+    QUEUED = 'queued',
     PROCESSING ='processing',
     RECUSED = 'recused',
     PAID ='paid',
