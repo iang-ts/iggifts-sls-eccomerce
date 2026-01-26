@@ -1,0 +1,8 @@
+createOrder:
+  handler: src/main/functions/order/createOrder.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /order
+        authorizer:
+          name: CognitoAuthorizer
