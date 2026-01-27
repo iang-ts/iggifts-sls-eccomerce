@@ -78,6 +78,7 @@ export namespace AccountItem {
     name: string;
     street: string;
     number: string;
+    city: string;
     state: string;
     postalCode: string;
   }

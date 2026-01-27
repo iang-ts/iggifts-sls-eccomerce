@@ -35,6 +35,7 @@ export namespace Account {
     name: string;
     street: string;
     number: string;
+    city: string;
     state: string;
     postalCode: string;
   }

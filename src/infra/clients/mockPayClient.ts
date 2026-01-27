@@ -51,6 +51,7 @@ export namespace MockPayClient {
       name: string;
       street: string;
       number: string;
+      city: string
       state: string;
       postalCode: string;
     }

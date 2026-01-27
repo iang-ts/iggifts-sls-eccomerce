@@ -17,6 +17,10 @@ export const createOrderSchema = z.object({
       .string()
       .min(1, '"number" should be at least 1 character long')
       .max(20, '"number" should be at most 20 characters long'),
+    city: z
+      .string()
+      .min(3, '"city" should be at least 3 characters long')
+      .max(50, '"city" should be at most 50 characters long'),
     state: z
       .string()
       .min(2, '"state" should be at least 2 characters long')
