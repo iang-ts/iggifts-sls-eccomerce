@@ -53,7 +53,7 @@ export namespace Order {
     PENDING = 'pending',
     QUEUED = 'queued',
     PROCESSING ='processing',
-    RECUSED = 'recused',
+    DECLINED = 'declined',
     PAID ='paid',
     SHIPPED ='shipped',
     DELIVERD ='delivered',
