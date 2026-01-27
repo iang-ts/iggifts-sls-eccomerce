@@ -29,10 +29,9 @@ export interface OrderConfirmationProps {
     street: string;
     number: string;
     complement?: string;
-    neighborhood: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
   };
   estimatedDelivery?: string;
   trackingUrl?: string;
@@ -61,8 +60,8 @@ export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   supportEmail = 'suporte@ig-gifts.ian.dev.br',
   websiteUrl = 'https://ig-gifts.ian.dev.br',
 }) => {
-  const formatZipCode = (zipCode: string): string => {
-    return zipCode.replace(/(\d{5})(\d{3})/, '$1-$2');
+  const formatPostalCode = (postalCode: string): string => {
+    return postalCode.replace(/(\d{5})(\d{3})/, '$1-$2');
   };
 
   const formatDate = (date: string): string => {
@@ -171,12 +170,9 @@ export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
               {shippingAddress.street}, {shippingAddress.number}
               {shippingAddress.complement && ` - ${shippingAddress.complement}`}
             </Text>
-            <Text className="text-sm text-gray-900 m-0 mb-2">
-              {shippingAddress.neighborhood}
-            </Text>
             <Text className="text-sm text-gray-900 m-0">
               {shippingAddress.city} - {shippingAddress.state},{' '}
-              {formatZipCode(shippingAddress.zipCode)}
+              {formatPostalCode(shippingAddress.postalCode)}
             </Text>
 
             {estimatedDelivery && (
