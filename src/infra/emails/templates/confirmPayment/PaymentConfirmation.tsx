@@ -11,10 +11,12 @@ import { Layout } from '../../components/Layout';
 import { OrderItem } from '../../components/OrderItem';
 import { OrderSummary } from '../../components/OrderSummary';
 
-export interface OrderConfirmationProps {
+export interface PaymentConfirmationProps {
   customerName: string;
   orderId: string;
-  orderDate: string;
+  paymentDate: string;
+  paymentMethod: string;
+  transactionId?: string;
   items: Array<{
     imageUrl: string;
     name: string;
@@ -43,10 +45,12 @@ export interface OrderConfirmationProps {
   websiteUrl?: string;
 }
 
-export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
+export const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   customerName,
   orderId,
-  orderDate,
+  paymentDate,
+  paymentMethod,
+  transactionId,
   items,
   subtotal,
   shipping,
@@ -66,7 +70,7 @@ export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   };
 
   return (
-    <Layout preview={`Order #${orderId} confirmed - ${storeName}`}>
+    <Layout preview={`Payment confirmed - Order #${orderId}`}>
       <Header storeName={storeName} logoUrl={logoUrl} />
 
       <Section className="bg-white px-8 py-10">
@@ -90,27 +94,53 @@ export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
             </tr>
           </table>
           <Text className="text-2xl font-bold text-gray-900 m-0 mb-2">
-            Order Confirmed!
+            Payment Confirmed!
           </Text>
           <Text className="text-base text-gray-600 m-0">
-            Hello, {customerName}! We've received your order and are already
-            preparing everything with great care.
+            Hello, {customerName}! Your payment has been approved and your order
+            is now being prepared for shipment.
           </Text>
         </div>
 
-        <div className="bg-red-50 rounded-lg px-6 py-5 mb-8">
-          <table style={{ width: '100%' }}>
+        <div className="bg-green-50 rounded-lg px-6 py-5 mb-8">
+          <table style={{ width: '100%', marginBottom: '12px' }}>
             <tr>
               <td>
-                <Text className="text-sm text-gray-700 m-0">Order date</Text>
+                <Text className="text-sm text-gray-700 m-0">Payment date</Text>
               </td>
               <td style={{ textAlign: 'right' }}>
                 <Text className="text-sm font-semibold text-gray-900 m-0">
-                  {formatDate(orderDate)}
+                  {formatDate(paymentDate)}
                 </Text>
               </td>
             </tr>
           </table>
+          <table style={{ width: '100%', marginBottom: transactionId ? '12px' : '0' }}>
+            <tr>
+              <td>
+                <Text className="text-sm text-gray-700 m-0">Payment method</Text>
+              </td>
+              <td style={{ textAlign: 'right' }}>
+                <Text className="text-sm font-semibold text-gray-900 m-0">
+                  {paymentMethod}
+                </Text>
+              </td>
+            </tr>
+          </table>
+          {transactionId && (
+            <table style={{ width: '100%' }}>
+              <tr>
+                <td>
+                  <Text className="text-sm text-gray-700 m-0">Transaction ID</Text>
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  <Text className="text-sm font-mono text-gray-900 m-0">
+                    {transactionId}
+                  </Text>
+                </td>
+              </tr>
+            </table>
+          )}
         </div>
 
         <Section className="mb-8">
@@ -185,14 +215,13 @@ export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
             <strong>Next steps:</strong>
           </Text>
           <Text className="text-sm text-gray-700 m-0 mb-2">
-            • You will receive an email once payment is confirmed
+            • Your order is being prepared for shipment
           </Text>
           <Text className="text-sm text-gray-700 m-0 mb-2">
-            • After payment confirmation, your order will be prepared and
-            shipped
+            • You will receive an email with the tracking code once the order is dispatched
           </Text>
           <Text className="text-sm text-gray-700 m-0">
-            • We will send the tracking code once the order is dispatched
+            • Estimated delivery: {estimatedDelivery ? formatDate(estimatedDelivery) : '5-7 business days'}
           </Text>
         </Section>
       </Section>
@@ -206,4 +235,4 @@ export const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   );
 };
 
-export default OrderConfirmation;
+export default PaymentConfirmation;

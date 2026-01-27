@@ -167,7 +167,7 @@ export class createOrderUseCase {
       await this.emailGateway.sendEmail({
         from: this.appConfig.email.emailFrom,
         html,
-        subject: `Confirmação de pedido ${order.id}`,
+        subject: `Order Confirmation ${order.id}`,
         to: [account.email],
       });
 
