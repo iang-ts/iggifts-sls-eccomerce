@@ -20,3 +20,8 @@ statements:
     Action:
     - sqs:SendMessage
     Resource: !GetAtt OrdersQueue.Arn
+
+  - Effect: Allow
+    Action:
+    - ses:SendEmail
+    Resource: "*"

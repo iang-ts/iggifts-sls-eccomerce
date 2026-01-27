@@ -1,5 +1,7 @@
 createOrder:
   handler: src/main/functions/order/createOrder.handler
+  timeout: 30
+  memorySize: 512
   events:
     - httpApi:
         method: POST

@@ -13,6 +13,8 @@ export class AppConfig {
 
   readonly queues: AppConfig.Queues;
 
+  readonly email: AppConfig.Email;
+
   constructor() {
     this.auth = {
       cognito: {
@@ -39,6 +41,10 @@ export class AppConfig {
 
     this.queues = {
       ordersQueueUrl: env.ORDERS_QUEUE,
+    };
+
+    this.email = {
+      emailFrom: env.EMAIL_FROM,
     };
   }
 }
@@ -69,5 +75,9 @@ export namespace AppConfig {
 
   export type Queues = {
     ordersQueueUrl: string;
+  }
+
+  export type Email = {
+    emailFrom: string;
   }
 }
