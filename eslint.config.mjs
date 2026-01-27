@@ -22,7 +22,7 @@ export default defineConfig([
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'no-duplicate-imports': 'error',
-      'no-console': 'warn',
+      'no-console': 'off',
       '@typescript-eslint/naming-convention': [
         'error',
         {
