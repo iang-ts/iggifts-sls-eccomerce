@@ -9,6 +9,7 @@ import { ProductRepository } from '@infra/database/dynamo/repositories/ProductRe
 import OrderConfirmation from '@infra/emails/templates/confirmOrder/OrderConfirmation';
 import { EmailGateway } from '@infra/gateways/EmailGateway';
 import { OrdersQueueGateway } from '@infra/gateways/OrdersQueueGateway';
+import { ProductsFileStorageGateway } from '@infra/gateways/ProductsFileStorageGateway';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { render } from '@react-email/render';
 import { AppConfig } from '@shared/config/AppConfig';
@@ -19,6 +20,7 @@ import React from 'react';
 export class createOrderUseCase {
   constructor(
     private readonly appConfig: AppConfig,
+    private readonly productsFileStorageGateway: ProductsFileStorageGateway,
     private readonly accountRepository: AccountRepository,
     private readonly productRepository: ProductRepository,
     private readonly orderRepository: OrderRepository,
@@ -131,7 +133,7 @@ export class createOrderUseCase {
 
       const items = orderProducts.map(op => {
         const product = productMap.get(op.productId)!;
-        const imageUrl = `https://${this.appConfig.cdns.productsCDN}/${product.inputFileKey}`;
+        const imageUrl = this.productsFileStorageGateway.getFileUrl(product.inputFileKey);
 
         return {
           imageUrl,
