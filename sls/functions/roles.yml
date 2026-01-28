@@ -1,0 +1,32 @@
+createRole:
+  handler:  src/main/functions/roles/createRole.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /roles
+        authorizer:
+          name: CognitoAuthorizer
+listRoles:
+  handler:  src/main/functions/roles/listRoles.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /roles
+        authorizer:
+          name: CognitoAuthorizer
+deleteRole:
+  handler:  src/main/functions/roles/deleteRole.handler
+  events:
+    - httpApi:
+        method: DELETE
+        path: /roles
+        authorizer:
+          name: CognitoAuthorizer
+addRoleToUser:
+  handler:  src/main/functions/roles/addRoleToUser.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /roles/adduser
+        authorizer:
+          name: CognitoAuthorizer

@@ -33,6 +33,7 @@ build:
 
 functions:
   - ${file(./sls/functions/auth.yml)}
+  - ${file(./sls/functions/roles.yml)}
   - ${file(./sls/functions/addresses.yml)}
   - ${file(./sls/functions/product.yml)}
   - ${file(./sls/functions/order.yml)}
