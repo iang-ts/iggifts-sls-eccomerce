@@ -1,9 +1,13 @@
 import { InvalidRefreshToken } from '@application/errors/application/InvalidRefreshToken';
 import {
+  AdminAddUserToGroupCommand,
   ConfirmForgotPasswordCommand,
+  CreateGroupCommand,
+  DeleteGroupCommand,
   ForgotPasswordCommand,
   GetTokensFromRefreshTokenCommand,
   InitiateAuthCommand,
+  ListGroupsCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from '@infra/clients/cognitoClient';
@@ -126,6 +130,51 @@ export class AuthGateway {
     await cognitoClient.send(command);
   }
 
+  async createRole({ roleName, description }: AuthGateway.CreateRoleParams): Promise<void> {
+    const command = new CreateGroupCommand({
+      UserPoolId: this.appConfig.auth.cognito.userPool.id,
+      GroupName: roleName,
+      Description: description,
+    });
+
+    await cognitoClient.send(command);
+  }
+
+  async listRoles(): Promise<AuthGateway.ListRolesResponse> {
+    const command = new ListGroupsCommand({
+      UserPoolId: this.appConfig.auth.cognito.userPool.id,
+    });
+
+    const { Groups: roles = [] } = await cognitoClient.send(command);
+
+    return {
+      roles: roles.map(role => ({
+        roleName: role.GroupName,
+        description: role.Description,
+        createdAt: role.CreationDate,
+      })),
+    };
+  }
+
+  async addRoleToUser({ roleName, email }: AuthGateway.AddRoleToUserParams): Promise<void> {
+    const command = new AdminAddUserToGroupCommand({
+      UserPoolId: this.appConfig.auth.cognito.userPool.id,
+      GroupName: roleName,
+      Username: email,
+    });
+
+    await cognitoClient.send(command);
+  }
+
+  async deleteRole(roleName: string): Promise<void> {
+    const command = new DeleteGroupCommand({
+      UserPoolId: this.appConfig.auth.cognito.userPool.id,
+      GroupName: roleName,
+    });
+
+    await cognitoClient.send(command);
+  }
+
   private getSecretHash(email: string): string {
     const { id, secret } = this.appConfig.auth.cognito.client;
 
@@ -173,5 +222,23 @@ export namespace AuthGateway {
     email: string;
     confirmationCode: string;
     password: string;
+  }
+
+  export type CreateRoleParams = {
+    roleName: string;
+    description?: string
+  }
+
+  export type ListRolesResponse = {
+    roles: {
+      roleName?: string;
+      description?: string;
+      createdAt?: Date;
+    }[]
+  }
+
+  export type AddRoleToUserParams = {
+    roleName: string;
+    email: string;
   }
 }
