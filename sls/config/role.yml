@@ -1,6 +1,14 @@
 statements:
   - Effect: Allow
     Action:
+      - cognito-idp:CreateGroup
+      - cognito-idp:ListGroups
+      - cognito-idp:DeleteGroup
+      - cognito-idp:AdminAddUserToGroup
+    Resource: !GetAtt UserPool.Arn
+
+  - Effect: Allow
+    Action:
       - dynamodb:GetItem
       - dynamodb:PutItem
       - dynamodb:BatchGetItem

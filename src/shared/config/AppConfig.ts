@@ -18,6 +18,9 @@ export class AppConfig {
   constructor() {
     this.auth = {
       cognito: {
+        userPool: {
+          id: env.COGNITO_USERPOOL_ID,
+        },
         client: {
           id: env.COGNITO_CLIENT_ID,
           secret: env.COGNITO_CLIENT_SECRET,
@@ -52,6 +55,9 @@ export class AppConfig {
 export namespace AppConfig {
   export type Auth = {
     cognito: {
+      userPool: {
+        id: string;
+      };
       client: {
         id: string;
         secret: string;

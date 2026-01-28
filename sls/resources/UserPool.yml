@@ -55,3 +55,10 @@ Resources:
       RefreshTokenRotation:
         Feature: ENABLED
         RetryGracePeriodSeconds: 0
+
+  AdminsUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: admins
+      Description: The users of this group can access all feats.
+      UserPoolId: !Ref UserPool
