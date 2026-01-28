@@ -1,4 +1,7 @@
 import { getSchema } from '@kernel/decorators/Schema';
+import { getAllowedRoles } from '@kernel/decorators/ValidateRoles';
+import { Forbidden } from '@application/errors/http/Forbidden';
+import { APIGatewayProxyEventHeaders } from 'aws-lambda';
 
 type TRouteType = 'public' | 'private';
 
@@ -7,6 +10,7 @@ export abstract class Controller<TType extends TRouteType, TBody = undefined> {
 
   public execute(request: Controller.Request<TType>): Promise<Controller.Response<TBody>> {
     const body = this.validateBody(request.body);
+    this.validateRoles(request);
 
     return this.handle({
       ...request,
@@ -22,6 +26,43 @@ export abstract class Controller<TType extends TRouteType, TBody = undefined> {
     }
 
     return schema.parse(body);
+  }
+
+  private validateRoles(request: Controller.Request<TType>) {
+    const allowedRoles = getAllowedRoles(this);
+
+    if (!allowedRoles || allowedRoles.length === 0) {
+      return;
+    }
+
+    if ('headers' in request && request.headers) {
+      const userRoles = this.extractRolesFromHeaders(request.headers);
+
+      const hasPermission = allowedRoles.some(role => userRoles.includes(role));
+
+      if (!hasPermission) {
+        throw new Forbidden();
+      }
+    } else {
+      throw new Forbidden();
+    }
+  }
+
+  private extractRolesFromHeaders(headers: APIGatewayProxyEventHeaders): string[] {
+    if (!headers?.authorization) {
+      return [];
+    }
+
+    try {
+      const [, payload] = headers.authorization.split('.');
+      const claims = JSON.parse(
+        Buffer.from(payload, 'base64url').toString('utf-8'),
+      );
+
+      return claims['cognito:groups'] ?? [];
+    } catch {
+      return [];
+    }
   }
 }
 
@@ -50,6 +91,7 @@ export namespace Controller {
     TQueryParams = Record<string, unknown>,
   > = BaseRequest<TBody, TParams, TQueryParams> & {
     accountId: string;
+    headers: APIGatewayProxyEventHeaders | null;
   };
 
   export type Request<

@@ -21,12 +21,18 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
           ? event.requestContext.authorizer.jwt.claims.internalId as string
           : null
       );
+      const headers = (
+        'authorizer' in event.requestContext
+          ? event.headers
+          : null
+      );
 
       const response = await controller.execute({
         body,
         params,
         queryParams,
         accountId,
+        headers,
       });
 
       return {
@@ -34,6 +40,10 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
         body: response.body ? JSON.stringify(response.body) : undefined,
       };
     } catch (error) {
+      if (error instanceof HttpError) {
+        return lambdaErrorResponse(error);
+      }
+
       if (error instanceof ZodError) {
         return lambdaErrorResponse({
           statusCode: 400,
@@ -45,10 +55,6 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
         });
       }
 
-      if (error instanceof HttpError) {
-        return lambdaErrorResponse(error);
-      }
-
       if (error instanceof ApplicationError) {
         return lambdaErrorResponse({
           statusCode: error.statusCode ?? 400,
@@ -57,7 +63,6 @@ export function lambdaHttpAdapter(controller: Controller<any, unknown>) {
         });
       }
 
-      // eslint-disable-next-line no-console
       console.log(error);
 
       return lambdaErrorResponse({
