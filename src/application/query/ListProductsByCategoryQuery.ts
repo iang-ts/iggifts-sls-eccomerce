@@ -1,3 +1,4 @@
+import { Product } from '@application/entities/Product';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoClient } from '@infra/clients/dynamoClient';
 import { ProductItem } from '@infra/database/dynamo/items/ProductItem';
@@ -8,7 +9,7 @@ import { AppConfig } from '@shared/config/AppConfig';
 export class ListProductsByCategoryQuery {
   constructor(private readonly appConfig: AppConfig) {}
 
-  async execute(category: string): Promise<ListProductsByCategoryQuery.Output[]> {
+  async execute(category: string): Promise<Product[]> {
     const command = new QueryCommand({
       TableName: this.appConfig.db.dynamodb.mainTable,
       IndexName: 'GSI2',
@@ -34,19 +35,5 @@ export class ListProductsByCategoryQuery {
     const { Items: productsItem = [] } = await dynamoClient.send(command);
 
     return productsItem.map(product => ProductItem.toEntity(product as ProductItem.ItemType));
-  }
-}
-
-export namespace ListProductsByCategoryQuery {
-  export type Output = {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    inputFileKey: string;
-    stockQuantity: number;
-    isActive: boolean;
-    createdAt: Date;
   }
 }
