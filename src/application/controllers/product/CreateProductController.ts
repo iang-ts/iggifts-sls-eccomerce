@@ -2,9 +2,11 @@ import { Controller } from '@application/contracts/Controller';
 import { CreateProductUseCase } from '@application/usecases/product/createProductUseCase';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { Schema } from '@kernel/decorators/Schema';
+import { ValidateRoles } from '@kernel/decorators/ValidateRoles';
 import { CreateProductBody, createProductSchema } from './schemas/createProductSchema';
 
 @Injectable()
+@ValidateRoles(['admins'])
 @Schema(createProductSchema)
 export class CreateProductController extends Controller<'private', CreateProductController.Response> {
   constructor(private readonly createProductUseCase: CreateProductUseCase) {
