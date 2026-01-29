@@ -27,7 +27,7 @@ export namespace ListProductsController {
     description: string;
     price: number;
     category: string;
-    inputFileKey: string;
+    imageUrl: string;
     stockQuantity: number;
     isActive: boolean;
     createdAt: string;
