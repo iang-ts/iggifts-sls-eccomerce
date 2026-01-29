@@ -10,6 +10,7 @@ statements:
   - Effect: Allow
     Action:
       - dynamodb:GetItem
+      - dynamodb:QueryCommand
       - dynamodb:PutItem
       - dynamodb:BatchGetItem
       - dynamodb:DeleteItem
@@ -17,20 +18,20 @@ statements:
       - dynamodb:Query
     Resource:
       - !GetAtt MainTable.Arn
-      - !Sub '${MainTable.Arn}/index/*'
+      - !Sub "${MainTable.Arn}/index/*"
 
   - Effect: Allow
     Action:
-    - s3:PutObject
-    - s3:GetObject
-    Resource: !Sub '${ProductsBucket.Arn}/*'
+      - s3:PutObject
+      - s3:GetObject
+    Resource: !Sub "${ProductsBucket.Arn}/*"
 
   - Effect: Allow
     Action:
-    - sqs:SendMessage
+      - sqs:SendMessage
     Resource: !GetAtt OrdersQueue.Arn
 
   - Effect: Allow
     Action:
-    - ses:SendEmail
+      - ses:SendEmail
     Resource: "*"
