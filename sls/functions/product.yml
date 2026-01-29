@@ -6,8 +6,8 @@ createProduct:
         path: /products
         authorizer:
           name: CognitoAuthorizer
-listProducts:
-  handler: src/main/functions/product/listProducts.handler
+listActivesProducts:
+  handler: src/main/functions/product/listActivesProducts.handler
   events:
     - httpApi:
         method: GET

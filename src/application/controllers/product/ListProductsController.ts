@@ -1,10 +1,10 @@
 import { Controller } from '@application/contracts/Controller';
-import { ListProductsUseCase } from '@application/usecases/product/listProductsUseCase';
+import { ListActivesProductsUseCase } from '@application/usecases/product/ListActivesProductsUseCase';
 import { Injectable } from '@kernel/decorators/Injectable';
 
 @Injectable()
 export class ListProductsController extends Controller<'private', ListProductsController.Response[]> {
-  constructor(private readonly listProductsUseCase: ListProductsUseCase) {
+  constructor(private readonly listProductsUseCase: ListActivesProductsUseCase) {
     super();
   }
 

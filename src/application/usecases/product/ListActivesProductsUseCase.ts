@@ -1,15 +1,15 @@
-import { GetAllActivesProductsQuery } from '@application/query/GetAllActivesProductsQuery';
+import { ListActivesProductsQuery } from '@application/query/ListActivesProductsQuery';
 import { ProductsFileStorageGateway } from '@infra/gateways/ProductsFileStorageGateway';
 import { Injectable } from '@kernel/decorators/Injectable';
 
 @Injectable()
-export class ListProductsUseCase {
+export class ListActivesProductsUseCase {
   constructor(
-    private readonly getAllActivesProductsQuery: GetAllActivesProductsQuery,
+    private readonly getAllActivesProductsQuery: ListActivesProductsQuery,
     private readonly productsFileStorageGateway: ProductsFileStorageGateway,
   ) { }
 
-  async execute(): Promise<ListProductsUseCase.Output[]> {
+  async execute(): Promise<ListActivesProductsUseCase.Output[]> {
 
     const products = await this.getAllActivesProductsQuery.execute();
 
@@ -21,7 +21,7 @@ export class ListProductsUseCase {
   }
 }
 
-export namespace ListProductsUseCase {
+export namespace ListActivesProductsUseCase {
   export type Output = {
     id: string;
     name: string;

@@ -5,10 +5,10 @@ import { Injectable } from '@kernel/decorators/Injectable';
 import { AppConfig } from '@shared/config/AppConfig';
 
 @Injectable()
-export class GetAllActivesProductsQuery {
+export class ListActivesProductsQuery {
   constructor(private readonly appConfig: AppConfig) {}
 
-  async execute(): Promise<GetAllActivesProductsQuery.Output[]> {
+  async execute(): Promise<ListActivesProductsQuery.Output[]> {
     const command = new QueryCommand({
       TableName: this.appConfig.db.dynamodb.mainTable,
       IndexName: 'GSI1',
@@ -37,7 +37,7 @@ export class GetAllActivesProductsQuery {
   }
 }
 
-export namespace GetAllActivesProductsQuery {
+export namespace ListActivesProductsQuery {
   export type Output = {
     id: string;
     name: string;
