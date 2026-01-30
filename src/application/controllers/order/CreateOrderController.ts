@@ -1,5 +1,5 @@
 import { Controller } from '@application/contracts/Controller';
-import { createOrderUseCase } from '@application/usecases/order/createOrderUseCase';
+import { CreateOrderUseCase } from '@application/usecases/order/createOrderUseCase';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { Schema } from '@kernel/decorators/Schema';
 import { CreateOrderBody, createOrderSchema } from './schemas/createOrderSchema';
@@ -7,7 +7,7 @@ import { CreateOrderBody, createOrderSchema } from './schemas/createOrderSchema'
 @Injectable()
 @Schema(createOrderSchema)
 export class CreateOrderController extends Controller<'private', CreateOrderController.Response> {
-  constructor(private readonly createOrderUseCase: createOrderUseCase) {
+  constructor(private readonly createOrderUseCase: CreateOrderUseCase) {
     super();
   }
 

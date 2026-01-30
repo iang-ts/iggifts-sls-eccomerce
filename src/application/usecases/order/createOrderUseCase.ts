@@ -17,7 +17,7 @@ import { Saga } from '@shared/saga/saga';
 import React from 'react';
 
 @Injectable()
-export class createOrderUseCase {
+export class CreateOrderUseCase {
   constructor(
     private readonly appConfig: AppConfig,
     private readonly productsFileStorageGateway: ProductsFileStorageGateway,
