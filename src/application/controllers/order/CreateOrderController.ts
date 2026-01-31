@@ -1,5 +1,5 @@
 import { Controller } from '@application/contracts/Controller';
-import { CreateOrderUseCase } from '@application/usecases/order/createOrderUseCase';
+import { CreateOrderUseCase } from '@application/usecases/order/CreateOrderUseCase';
 import { Injectable } from '@kernel/decorators/Injectable';
 import { Schema } from '@kernel/decorators/Schema';
 import { CreateOrderBody, createOrderSchema } from './schemas/createOrderSchema';
