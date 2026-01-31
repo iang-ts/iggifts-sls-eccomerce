@@ -36,7 +36,7 @@ export class OrdersQueuesConsumer implements IQueueConsumer<OrdersQueueGateway.M
       status: Order.Status.PROCESSING,
     });
 
-    const { paymentStatus } = await this.paymentGateway.pay({
+    const { paymentStatus, transID } = await this.paymentGateway.pay({
       cardDetails: params.cardDetails,
       totalAmount: params.order.totalAmount,
       billingAddress: params.order.shippingAddress,
@@ -113,6 +113,13 @@ export class OrdersQueuesConsumer implements IQueueConsumer<OrdersQueueGateway.M
         status: Order.Status.CANCELLED,
       });
     }
+
+    await this.orderRepository.updatePartial({
+      orderId: params.order.id,
+      data: {
+        gatewayPaymentIntentId: transID,
+      },
+    });
 
   }
 }

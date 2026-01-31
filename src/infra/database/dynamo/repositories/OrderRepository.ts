@@ -55,10 +55,66 @@ export class OrderRepository {
         ':newStatus': status,
       },
       ConditionExpression: 'attribute_exists(PK)',
-      ReturnValues: 'ALL_NEW',
+      ReturnValues: 'NONE',
     });
 
     await dynamoClient.send(command);
+  }
+
+  async updatePartial({ orderId, data }: OrderRepository.UpdatePartialParams): Promise<void> {
+    if (Object.keys(data).length === 0) {
+      return;
+    }
+
+    const dataWithTimestamp = {
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const { updateExpression, expressionAttributeNames, expressionAttributeValues } =
+      this.buildUpdateExpression(dataWithTimestamp);
+
+    const command = new UpdateCommand({
+      TableName: this.config.db.dynamodb.mainTable,
+      Key: {
+        PK: OrderItem.getPK(orderId),
+        SK: OrderItem.getSK(orderId),
+      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
+      ConditionExpression: 'attribute_exists(PK)',
+      ReturnValues: 'NONE',
+    });
+
+    await dynamoClient.send(command);
+  }
+
+  private buildUpdateExpression(data: Record<string, any>) {
+    const expressionAttributeNames: Record<string, string> = {};
+    const expressionAttributeValues: Record<string, any> = {};
+    const setExpressions: string[] = [];
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value === undefined) {
+        return;
+      }
+
+      const attributeName = `#${key}`;
+      const attributeValue = `:${key}`;
+
+      expressionAttributeNames[attributeName] = key;
+      expressionAttributeValues[attributeValue] = value;
+      setExpressions.push(`${attributeName} = ${attributeValue}`);
+    });
+
+    const updateExpression = `SET ${setExpressions.join(', ')}`;
+
+    return {
+      updateExpression,
+      expressionAttributeNames,
+      expressionAttributeValues,
+    };
   }
 
   async delete(orderId: string): Promise<void> {
@@ -78,5 +134,15 @@ export namespace OrderRepository {
   export type UpdateStatusParams = {
     orderId: string;
     status: Order.Status;
-  }
+  };
+
+  export type UpdatePartialParams = {
+    orderId: string;
+    data: Partial<{
+      status: Order.Status;
+      totalAmount: number;
+      shippingAddress: Order.ShippingAddress;
+      gatewayPaymentIntentId: string;
+    }>;
+  };
 }
