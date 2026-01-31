@@ -12,7 +12,7 @@ export class ListOrdersByAccountQuery {
   async execute(accountId: string): Promise<Order[]> {
     const command = new QueryCommand({
       TableName: this.appConfig.db.dynamodb.mainTable,
-      IndexName: 'GS1',
+      IndexName: 'GSI1',
       ProjectionExpression: '#GSI1PK, #GSI1SK, #id, #accountId, #status, #totalAmount, #shippingAddress, #gatewayPaymentIntentId, #updatedAt, #createdAt',
       KeyConditionExpression: '#GSI1PK = :GSI1PK AND begins_with(#GSI1SK, :GSI1SK)',
       ScanIndexForward: false,

@@ -5,7 +5,16 @@ createOrder:
   events:
     - httpApi:
         method: POST
-        path: /order
+        path: /orders
+        authorizer:
+          name: CognitoAuthorizer
+
+listOrdersByAccount:
+  handler: src/main/functions/order/listOrdersByAccount.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /orders
         authorizer:
           name: CognitoAuthorizer
 
