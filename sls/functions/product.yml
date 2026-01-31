@@ -12,5 +12,3 @@ listActivesProducts:
     - httpApi:
         method: GET
         path: /products
-        authorizer:
-          name: CognitoAuthorizer
