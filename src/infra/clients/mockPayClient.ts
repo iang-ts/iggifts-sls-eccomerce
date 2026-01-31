@@ -1,4 +1,5 @@
 import { PaymentStatus } from '@application/entities/PaymentStatus';
+import KSUID from 'ksuid';
 
 export class MockPayClient {
   private static readonly SUCCESS_RATE = 0.9;
@@ -16,7 +17,7 @@ export class MockPayClient {
 
     console.log(`Payment ${paymentStatus}`);
 
-    return { paymentStatus };
+    return { paymentStatus, transID: this.generateTransId() };
   }
 
   private static determinePaymentStatus(): PaymentStatus {
@@ -32,11 +33,16 @@ export class MockPayClient {
 
     return PaymentStatus.SUSPECT_FRAUD;
   }
+
+  private static generateTransId(): string {
+    return KSUID.randomSync().string.slice(0, 9);
+  }
 }
 
 export namespace MockPayClient {
   export type MockPayResponse = {
     paymentStatus: PaymentStatus;
+    transID: string;
   }
 
   export type MockPayParams = {
