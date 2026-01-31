@@ -10,16 +10,6 @@ import { minutesToSeconds } from '@shared/utils/minutesToSeconds';
 export class ProductsFileStorageGateway {
   constructor(private readonly config: AppConfig) {}
 
-  static generateInputFileKey({
-    accountId,
-    inputType,
-  }: ProductsFileStorageGateway.GenerateInputFileKeyParams ): string {
-    const extension = inputType;
-    const filename = `${KSUID.randomSync().string}.${extension}`;
-
-    return `${accountId}/${filename}`;
-  }
-
   static generateProductFileKey(inputType: string): string {
     const extension = inputType;
     const filename = `${KSUID.randomSync().string}.${extension}`;
