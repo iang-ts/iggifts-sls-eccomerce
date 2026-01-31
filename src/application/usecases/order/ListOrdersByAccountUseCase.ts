@@ -1,7 +1,6 @@
 import { Order } from '@application/entities/Order';
 import { ListOrdersByAccountQuery } from '@application/query/ListOrdersByAccountQuery';
 import { OrderProductRepository } from '@infra/database/dynamo/repositories/OrderProductRepository';
-import { ProductsFileStorageGateway } from '@infra/gateways/ProductsFileStorageGateway';
 import { Injectable } from '@kernel/decorators/Injectable';
 
 @Injectable()
@@ -9,7 +8,6 @@ export class ListOrdersByAccountUseCase {
   constructor(
     private readonly listOrdersByAccountQuery: ListOrdersByAccountQuery,
     private readonly orderProductRepository: OrderProductRepository,
-    private readonly productsFileStorageGateway: ProductsFileStorageGateway,
   ) { }
 
   async execute(accountId: string): Promise<ListOrdersByAccountUseCase.Output> {
