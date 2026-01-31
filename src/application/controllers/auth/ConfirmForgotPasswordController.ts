@@ -7,14 +7,14 @@ import { ConfirmForgotPasswordBody, confirmForgotPasswordSchema } from './schema
 
 @Injectable()
 @Schema(confirmForgotPasswordSchema)
-export class ConfirmForgotPasswordController extends Controller<'public', ConfirmForgotPasswordController.Response> {
+export class ConfirmForgotPasswordController extends Controller<'public', Response> {
   constructor(private readonly confirmForgotPasswordUseCase: ConfirmForgotPasswordUseCase) {
     super();
   }
 
   protected override async handle(
     { body }: Controller.Request<'public', ConfirmForgotPasswordBody>,
-  ): Promise<Controller.Response<ConfirmForgotPasswordController.Response>> {
+  ): Promise<Controller.Response<Response>> {
     try {
       const { confirmationCode, email, password } = body;
 
@@ -31,8 +31,4 @@ export class ConfirmForgotPasswordController extends Controller<'public', Confir
       throw new BadRequest('Failed. Try again.');
     }
   }
-}
-
-export namespace ConfirmForgotPasswordController {
-  export type Response = null;
 }

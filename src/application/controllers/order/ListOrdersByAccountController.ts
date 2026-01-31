@@ -1,4 +1,5 @@
 import { Controller } from '@application/contracts/Controller';
+import { Order } from '@application/entities/Order';
 import { ListOrdersByAccountUseCase } from '@application/usecases/order/ListOrdersByAccountUseCase';
 import { Injectable } from '@kernel/decorators/Injectable';
 
@@ -19,5 +20,33 @@ export class ListOrdersByAccountController extends Controller<'private', ListOrd
 }
 
 export namespace ListOrdersByAccountController {
-  export type Response = any;
+  export type Response = {
+    id: string;
+    accountId: string;
+    status: Order.Status;
+    totalAmount: number;
+    shippingAddress: ShippingAddress;
+    gatewayPaymentIntentId?: string;
+    updatedAt: string;
+    createdAt: string;
+    orderProducts: OrderProductItem[];
+  }[];
+
+  export type OrderProductItem = {
+    id: string;
+    productId: string;
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+    subtotal: number;
+  };
+
+  export type ShippingAddress = {
+    name: string;
+    street: string;
+    number: string;
+    city: string;
+    state: string;
+    postalCode: string;
+  };
 }
