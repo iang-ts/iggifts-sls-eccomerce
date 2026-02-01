@@ -12,7 +12,6 @@ listActivesProducts:
     - httpApi:
         method: GET
         path: /products
-
 listProductsByCategory:
   handler: src/main/functions/product/listProductsByCategory.handler
   events:

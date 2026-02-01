@@ -27,6 +27,28 @@ export class OrderRepository {
     return OrderItem.toEntity(orderItem as OrderItem.ItemType);
   }
 
+  async getStatus(orderId: string): Promise<{ status: Order.Status } | null> {
+    const command = new GetCommand({
+      TableName: this.config.db.dynamodb.mainTable,
+      Key: {
+        PK: OrderItem.getPK(orderId),
+        SK: OrderItem.getSK(orderId),
+      },
+    });
+
+    const { Item: orderItem } = await dynamoClient.send(command);
+
+    if (!orderItem) {
+      return null;
+    }
+
+    const order = OrderItem.toEntity(orderItem as OrderItem.ItemType);
+
+    return {
+      status: order.status,
+    };
+  }
+
   async create(order: Order): Promise<void> {
     const orderItem = OrderItem.fromEntity(order);
 
@@ -65,11 +87,6 @@ export class OrderRepository {
     if (Object.keys(data).length === 0) {
       return;
     }
-
-    const dataWithTimestamp = {
-      ...data,
-      updatedAt: new Date().toISOString(),
-    };
 
     const { updateExpression, expressionAttributeNames, expressionAttributeValues } =
       this.buildUpdateExpression(dataWithTimestamp);
