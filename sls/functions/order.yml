@@ -18,6 +18,15 @@ listOrdersByAccount:
         authorizer:
           name: CognitoAuthorizer
 
+listOrderById:
+  handler: src/main/functions/order/listOrderById.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /orders/{orderId}
+        authorizer:
+          name: CognitoAuthorizer
+
 processOrder:
   handler: src/main/functions/order/processOrder.handler
   memorySize: 1024
